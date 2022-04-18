@@ -560,7 +560,7 @@ class VAEShell():
             logvars(np.array): Log variance array (prior to reparameterization)
         """
         data = vae_data_gen(data, props=None, char_dict=self.params['CHAR_DICT'])
-
+        print(data)
         data_iter = torch.utils.data.DataLoader(data,
                                                 batch_size=self.params['BATCH_SIZE'],
                                                 shuffle=False, num_workers=0,
@@ -573,7 +573,10 @@ class VAEShell():
         logvars = torch.empty((save_shape, self.params['d_latent'])).cpu()
 
         self.model.eval()
+
+        print(len(data_iter))
         for j, data in enumerate(data_iter):
+            print('smiles {}'.format(j))
             if log:
                 log_file = open('memory/{}_progress.txt'.format(self.name), 'a')
                 log_file.write('{}\n'.format(j))
@@ -599,6 +602,8 @@ class VAEShell():
                 mems[start:stop, :] = mem.detach().cpu()
                 mus[start:stop, :] = mu.detach().cpu()
                 logvars[start:stop, :] = logvar.detach().cpu()
+
+        print(mems)
 
         if save:
             if save_fn == 'model_name':
